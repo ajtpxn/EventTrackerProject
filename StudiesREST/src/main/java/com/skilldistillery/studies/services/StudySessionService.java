@@ -14,4 +14,6 @@ public interface StudySessionService {
 
 	void deleteStudySession(int id);
 
+	StudySession updateStudySession(StudySession studySession, int id);
+
 }

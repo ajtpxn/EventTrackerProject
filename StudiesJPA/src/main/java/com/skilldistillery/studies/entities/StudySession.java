@@ -7,7 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="study_sessions")
@@ -22,8 +26,9 @@ public class StudySession {
 	@Column(name="study_date")
 	private Date studyDate;
 	
-	@Column(name="study_topic_id")
-	private int studyTopicId;
+	@ManyToOne
+	@JoinColumn(name="study_topic_id")
+	private Topic topic;
 
 	public int getId() {
 		return id;
@@ -49,13 +54,15 @@ public class StudySession {
 		this.studyDate = studyDate;
 	}
 
-	public int getStudyTopicId() {
-		return studyTopicId;
+	public Topic getTopic() {
+		return topic;
 	}
 
-	public void setStudyTopicId(int studyTopicId) {
-		this.studyTopicId = studyTopicId;
+	public void setTopic(Topic topic) {
+		this.topic = topic;
 	}
+
+
 	
 	
 
