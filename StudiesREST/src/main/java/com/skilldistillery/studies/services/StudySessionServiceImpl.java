@@ -40,7 +40,6 @@ public class StudySessionServiceImpl implements StudySessionService {
 	
 	@Override
 	public StudySession updateStudySession(StudySession studySession, int id) {
-		System.out.println("Date: "+studySession.getStudyDate());
 		Optional<StudySession> opt = sessRepo.findById(id);
 		StudySession newStudySession = null;
 		if (opt.isPresent()) {
@@ -50,9 +49,6 @@ public class StudySessionServiceImpl implements StudySessionService {
 		newStudySession.setStudyDate(studySession.getStudyDate());
 		newStudySession.setTopic(studySession.getTopic());
 		sessRepo.saveAndFlush(newStudySession);
-		
-		System.out.println("New Study Date: "+newStudySession.getStudyDate());
-		
 		return newStudySession;
 	}
 	
