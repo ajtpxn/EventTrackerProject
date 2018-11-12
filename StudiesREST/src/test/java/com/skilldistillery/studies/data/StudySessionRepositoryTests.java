@@ -15,7 +15,7 @@ import com.skilldistillery.studies.entities.StudySession;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-class SessionRepositoryTests {
+class StudySessionRepositoryTests {
 	
 	@Autowired
 	StudySessionRepository sessRepo;
