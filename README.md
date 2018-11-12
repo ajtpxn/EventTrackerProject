@@ -1,6 +1,6 @@
-# Study Session Tracker  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![movie](homework_small.jpg)#
+# REST Study Session Tracker  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![homework](homework_small.jpg) #
 
-## Skill Distillery Project November 2018 ##
+## Skill Distillery Project - November 2018 ##
 
 ### What does this software do? ###
 
@@ -22,7 +22,7 @@ This software is for tracking the time you spent studying. Right now it is just 
 
 
 | Type        | Format          | Response  |
-| ------------- |:-------------:| -----:|
+| ------------- |:-------------:| -----|
 | GET      | http://localhost:8383/api/ping | "pong" |
 | GET      | http://localhost:8383/api/studySessions | Returns all study sessions in JSON format. |
 | GET      | http://localhost:8383/api/studySessions/{id} | Returns one study session with the ID given in JSON format.  |
@@ -49,13 +49,14 @@ Example JSON for POST and PUT:
 ### Topic Functions ###
 
 
-| Type        | Format          | Response  |
-| ------------- |:-------------:| -----:|
-| GET      | http://localhost:8383/api/topics | Returns all study topics in JSON format. |
-| GET      | http://localhost:8383/api/topics/{topicTitle} | Returns study sessions by topic title.  |
-| GET      | http://localhost:8383/api/topics/{topicTitle}/minutes | Returns study sessions by topic title.  |
-| POST      | http://localhost:8383/api/topics | Add a topic. |
-| PUT      | http://localhost:8383/api/topics/{id} | Update a topic. |
+| Type     |                            Format                     | Response                                 |
+| -------- |:-----------------------------------------------------:| -----------------------------------------|
+| GET      | http://localhost:8383/api/topics                      | Returns all study topics in JSON format. |
+| GET      | http://localhost:8383/api/topics/{topicTitle}         | Returns study sessions by topic title in JSON format.   |
+| GET      | http://localhost:8383/api/topics/{topicTitle}/minutes | Returns the minutes spent studying a topic.   |
+| POST     | http://localhost:8383/api/topics                      | Add a topic. Receives a topic in JSON format and adds it to the list. See "Formatting" below for proper formatting of the JSON.                            |
+| PUT      | http://localhost:8383/api/topics/{id}                 | Updates the specified topic. Receives an ID in the URL and a topic in JSON format and updates the topic with that ID it to the list. See "Formatting" below for proper formatting of the JSON.                          |
+| DELETE   | http://localhost:8383/api/topics/{id}                 | Delete a topic.                          |
 
 ### Formatting Topic JSON ###
 
@@ -69,7 +70,8 @@ Example JSON for PUT:
 
  ### Notes ###
 
- * I really enjoyed this project.
+ * Everything went much faster than I expected.
+ * I have not been able to get the JUnit tests working yet.
 
 
 
