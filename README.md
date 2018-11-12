@@ -71,7 +71,7 @@ Example JSON for PUT:
  ### Notes ###
 
  * Everything went much faster than I expected.
- * I have not been able to get the JUnit tests working yet.
+ * It took me longer to get the JUnit tests working than to write the software.
 
 
 

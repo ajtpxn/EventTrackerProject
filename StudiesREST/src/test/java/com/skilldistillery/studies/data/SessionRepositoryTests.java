@@ -2,7 +2,6 @@ package com.skilldistillery.studies.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -24,10 +23,14 @@ class SessionRepositoryTests {
 	@Test
 	@DisplayName("Test StudySessionRepository")
 	void test01() {
-		Optional<StudySession> studySession = sessRepo.findById(1);
-		System.out.println(studySession);
-//		int returnName = studySession.getLength();
-//		assertEquals("biking", returnName);
+		Optional<StudySession> opt = sessRepo.findById(1);
+		System.out.println(opt);
+		StudySession studySession = null;
+		if ( opt.isPresent() ) {
+			studySession = opt.get();
+		}
+		int returnName = studySession.getLength();
+		assertEquals(20, returnName);
 	}
 
 }
