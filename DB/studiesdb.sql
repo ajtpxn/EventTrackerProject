@@ -50,12 +50,12 @@ AUTO_INCREMENT = 2
 DEFAULT CHARACTER SET = utf8;
 
 SET SQL_MODE = '';
-GRANT USAGE ON *.* TO student@localhost;
- DROP USER student@localhost;
+GRANT USAGE ON *.* TO studiesuser@localhost;
+ DROP USER studiesuser@localhost;
 SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
-CREATE USER 'student'@'localhost' IDENTIFIED BY 'student';
+CREATE USER 'studiesuser'@'localhost' IDENTIFIED BY 'studiesuser';
 
-GRANT SELECT, INSERT, TRIGGER, UPDATE, DELETE ON TABLE `studiesdb`.* TO 'student'@'localhost';
+GRANT SELECT, INSERT, TRIGGER, UPDATE, DELETE ON TABLE `studiesdb`.* TO 'studiesuser'@'localhost';
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
