@@ -1,6 +1,6 @@
 package com.skilldistillery.studies.entities;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="study_sessions")
@@ -24,7 +22,7 @@ public class StudySession {
 	private int length;
 	
 	@Column(name="study_date")
-	private Date studyDate;
+	private LocalDate studyDate;
 	
 	@ManyToOne
 	@JoinColumn(name="study_topic_id")
@@ -46,11 +44,11 @@ public class StudySession {
 		this.length = length;
 	}
 
-	public Date getStudyDate() {
+	public LocalDate getStudyDate() {
 		return studyDate;
 	}
 
-	public void setStudyDate(Date studyDate) {
+	public void setStudyDate(LocalDate studyDate) {
 		this.studyDate = studyDate;
 	}
 

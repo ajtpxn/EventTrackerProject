@@ -27,13 +27,10 @@ public class StudySessionController {
 		return "pong";
 	}
 	
-	
 	@GetMapping("/")
 	public String home() {
 		return "index.html";
 	}
-	
-	
 	
 	@GetMapping("studySessions")
 	public List<StudySession> index() {
