@@ -2,10 +2,24 @@ window.addEventListener('load', function(e) {
   init();
 });
 
+let topicsArr = [];
+
+function getAllTopicsForDropDown() {
+  let xhr = new XMLHttpRequest();
+  xhr.open('GET', 'http://localhost:8383/api/topics');
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status <= 200) {
+      let rawData = xhr.responseText;
+      topicsArr = JSON.parse(rawData);
+      populateTopicDropDown(topicsArr);
+    }
+  }
+  xhr.send();
+}
 
 function init() {
-  populateDateOnAddForm();
   getAllTopicsForDropDown();
+  populateDateOnAddForm();
   document.addStudySession.addSessBtn.addEventListener('click', function(event) {
     event.preventDefault();
     let unformattedDate = document.addStudySession.date.value;
@@ -67,7 +81,7 @@ function displayStudySessions(studySessions) {
     sessionDetailsLink.href = '*';
     sessionDetailsLink.textContent = 'Details';
     sessionDetailsLink.classList.add('detailsLink');
-    sessionDetailsLink.addEventListener('click', function(e) {
+    sessionDetailsLink.addEventListener('click', function x(e) {
       e.preventDefault();
       let thisSession = sessionDetailsLink.parentNode.parentNode;
       let sessIndex = thisSession.rowIndex;
@@ -96,8 +110,7 @@ function displayStudySessions(studySessions) {
       updateSessionLink.classList.add('text-success');
       updateSessionLink.addEventListener('click', function(e) {
         event.preventDefault();
-        // take data from updates and submit to api
-        updateStudySession(studySession.id, postDate);
+        updateStudySession(studySession.id, updateDateInput.value, updateTopicInput.value, updateLengthInput.value, sessIndex);
       });
       updateCol.appendChild(updateSessionLink);
       let notesAndDeleteRow = sessionsBody.insertRow(sessIndex + 1);
@@ -113,6 +126,14 @@ function displayStudySessions(studySessions) {
         // get session id and submit to api for deletion
       });
       deleteCol.appendChild(deleteSessionLink);
+      sessionDetailsLink.removeEventListener('click', x);
+      sessionDetailsLink.addEventListener('click', function y(e) {
+    	  e.preventDefault();
+    	  console.log('No Action.');
+        sessionDetailsLink.parentNode.parentNode.id = 'openDetails';
+        closeDetails();
+        sessionDetailsLink.parentNode.parentNode.id = 'closedDetails';
+      });
     });
     tdSessionButtonCol.appendChild(sessionDetailsLink);
     trSession.appendChild(tdSessionButtonCol);
@@ -152,22 +173,8 @@ function postStudySession(postDate, postTopic, postLength) {
   xhr.send(studySessionObjectJson);
 }
 
-function getAllTopicsForDropDown() {
-  let xhr = new XMLHttpRequest();
-  xhr.open('GET', 'http://localhost:8383/api/topics');
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4 && xhr.status <= 200) {
-      let rawData = xhr.responseText;
-      topicsArr = JSON.parse(rawData);
-      populateTopicDropDown();
-    }
-  }
-  xhr.send();
-}
-
-function populateTopicDropDown() {
+function populateTopicDropDown(topics) {
   let topicDropDown = document.getElementById("topicDropDown");
-
   function topicsDropDownFunc(topic) {
     let optionId = topic.id;
     let optionTitle = topic.title;
@@ -176,7 +183,7 @@ function populateTopicDropDown() {
     topicElement.textContent = optionTitle;
     topicDropDown.appendChild(topicElement);
   }
-  topicsArr.forEach(topicsDropDownFunc);
+  topics.forEach(topicsDropDownFunc);
 }
 
 function dateFromISOToUSA(unformattedDate) {
@@ -216,30 +223,70 @@ function getTodaysDate() {
   return today;
 }
 
-function updateStudySession(postId, postDate, postTopic, postLength) {
+function getTopicId(topicTitle) {
+  let topicId = 0;
+  let topicFunc = function(topic) {
+    if (topicTitle === topic.title) {
+      topicId = topic.id;
+    }
+  }
+  topicsArr.forEach(topicFunc);
+  return topicId;
+}
+
+function updateStudySession(putId, putDate, putTopic, putLength, sessIndex) {
   let xhr = new XMLHttpRequest();
-  xhr.open('PUT', 'http://localhost:8383/api/studySessions' + postId, true);
+  xhr.open('PUT', 'http://localhost:8383/api/studySessions/' + putId, true);
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
       if (xhr.status == 200 || xhr.status == 201) {
         let studySession = JSON.parse(xhr.responseText);
-        let stdSessArr = [];
-        stdSessArr.push(studySession);
-        displayStudySessions(stdSessArr);
+        console.log('Updated');
+        console.log(studySession);
+        let sessionsBody = document.getElementById('sessionsBody');
+        let editElement = sessionsBody.children[sessIndex-1];
+        let formattedDate = dateFromISOToUSA(studySession.studyDate);
+        editElement.children[0].textContent = formattedDate;
+        editElement.children[1].textContent = studySession.topic.title;
+        editElement.children[2].textContent = studySession.length;
+        let removeEditor = sessionsBody.children[sessIndex];
+        console.log('Delete this row: ' + sessIndex);
+        console.log(removeEditor);
+        let removeDeleteRow = sessionsBody.children[sessIndex+1]
+        console.log('And this one: ' + (sessIndex+1));
+        console.log(removeDeleteRow);
       } else {
         console.log("PUT request failed.");
         console.error(xhr.status + ': ' + xhr.responseText);
       }
     }
   }
+  let formattedDate = dateFromUSAToISO(putDate);
+  let putTopicObject = {
+    id: getTopicId(putTopic),
+    title: putTopic
+  }
   let studySessionObject = {
-    length: postLength,
-    studyDate: postDate,
-    topic: postTopic
+    length: putLength,
+    studyDate: formattedDate,
+    topic: putTopicObject
   };
   let studySessionObjectJson = JSON.stringify(studySessionObject);
   xhr.send(studySessionObjectJson);
+}
+
+function closeDetails() {
+  let sessionsBody = document.getElementById('sessionsBody');
+  let openSession = document.getElementById('openDetails');
+  let editor = openSession.nextElementSibling;
+  let notesAndDelete = openSession.nextElementSibling.nextElementSibling;
+  sessionsBody.removeChild(editor);
+  sessionsBody.removeChild(notesAndDelete);
+}
+
+function deleteSession(sessionId) {
+
 }
 
 
