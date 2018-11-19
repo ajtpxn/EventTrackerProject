@@ -4,8 +4,9 @@
 
 ### What does this software do? ###
 
-This software is for tracking the time you spent studying. Right now it is just an api with no front end, but eventually you will be able to record all of your study sessions, view, and edit them on a webpage.
+This software is for tracking the time you spent studying. Originally it was just an api with no front end, but now you will be able to record all of your study sessions, view, and edit them on a webpage.
 
+Current example version: http://jaloway.com:8080/StudiesREST/
 
 ### Technologies Used ###
 
@@ -16,6 +17,8 @@ This software is for tracking the time you spent studying. Right now it is just 
 * Spring JPA
 * Git
 * GitHub
+* JavaScript
+* XHR
 
 
 ### Study Session Functions ###
@@ -70,8 +73,9 @@ Example JSON for PUT:
 
  ### Notes ###
 
- * Everything went much faster than I expected.
+ * Everything went much faster than I expected on the api side of things and much slower than I expected on the JavaScript side of things.
  * It took me longer to get the JUnit tests working than to write the software.
+ * I ran into issues getting the scope of my JS variables correct but got everything working correctly in the end.
 
 
 

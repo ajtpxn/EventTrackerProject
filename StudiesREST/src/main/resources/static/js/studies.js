@@ -6,7 +6,7 @@ let topicsArr = [];
 
 function getAllTopicsForDropDown() {
   let xhr = new XMLHttpRequest();
-  xhr.open('GET', 'http://localhost:8383/api/topics');
+  xhr.open('GET', 'api/topics');
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4 && xhr.status <= 200) {
       let rawData = xhr.responseText;
@@ -44,7 +44,7 @@ function init() {
 
 function ping() {
   let xhr = new XMLHttpRequest();
-  xhr.open('GET', 'http://localhost:8383/api/ping');
+  xhr.open('GET', 'api/ping');
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4 && xhr.status <= 200) {
       let data = xhr.responseText;
@@ -57,7 +57,7 @@ function ping() {
 
 function sessionsIndex() {
   let xhr = new XMLHttpRequest();
-  xhr.open('GET', 'http://localhost:8383/api/studySessions');
+  xhr.open('GET', 'api/studySessions');
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4 && xhr.status <= 200) {
       let rawData = xhr.responseText;
@@ -166,7 +166,7 @@ function setDateToToday() {
 
 function postStudySession(postDate, postTopic, postLength) {
   let xhr = new XMLHttpRequest();
-  xhr.open('POST', 'http://localhost:8383/api/studySessions', true);
+  xhr.open('POST', 'api/studySessions', true);
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
@@ -254,7 +254,7 @@ function getTopicId(topicTitle) {
 
 function updateStudySession(putId, putDate, putTopic, putLength, sessIndex) {
   let xhr = new XMLHttpRequest();
-  xhr.open('PUT', 'http://localhost:8383/api/studySessions/' + putId, true);
+  xhr.open('PUT', 'api/studySessions/' + putId, true);
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
@@ -294,7 +294,7 @@ function updateStudySession(putId, putDate, putTopic, putLength, sessIndex) {
 
 function deleteSession(sessionId, sessIndex) {
   let xhr = new XMLHttpRequest();
-  xhr.open('DELETE', 'http://localhost:8383/api/studySessions/' + sessionId);
+  xhr.open('DELETE', 'api/studySessions/' + sessionId);
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4 && xhr.status <= 200) {
       let deleteSuccess = xhr.responseText;
