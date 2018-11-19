@@ -33,6 +33,13 @@ function init() {
     postStudySession(postDate, postTopic, postLength);
   });
   sessionsIndex();
+  document.minByMon.button.addEventListener('click', function(e) {
+    e.preventDefault();
+    let monDD = document.minByMon.months;
+    let selMon = monDD.options[monDD.selectedIndex].value;
+    let year = document.minByMon.year.value;
+    minByMon(selMon, year);
+  });
 }
 
 function ping() {
@@ -128,7 +135,8 @@ function displayStudySessions(studySessions) {
       deleteSessionLink.textContent = 'Delete';
       deleteSessionLink.classList.add('text-danger');
       var deleteFunc = function(e) {
-        deleteSession(sessionId);
+        e.preventDefault();
+        deleteSession(studySession.id, sessIndex);
       }
       deleteSessionLink.addEventListener('click', deleteFunc);
       deleteCol.appendChild(deleteSessionLink);
@@ -284,20 +292,59 @@ function updateStudySession(putId, putDate, putTopic, putLength, sessIndex) {
 
 
 
-function deleteSession(sessionId) {
-
-    let xhr = new XMLHttpRequest();
-    xhr.open('DELETE', 'http://localhost:8383/api/studySessions/' + sessionId);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status <= 200) {
-        let rawData = xhr.responseText;
-        let studySessions = JSON.parse(rawData);
-        displayStudySessions(studySessions);
+function deleteSession(sessionId, sessIndex) {
+  let xhr = new XMLHttpRequest();
+  xhr.open('DELETE', 'http://localhost:8383/api/studySessions/' + sessionId);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status <= 200) {
+      let deleteSuccess = xhr.responseText;
+      if (deleteSuccess) {
+        let sessionsBody = document.getElementById('sessionsBody');
+        let deleteElement = sessionsBody.children[sessIndex - 1];
+        let editor = sessionsBody.children[sessIndex];
+        let notesAndDelete = sessionsBody.children[sessIndex + 1]
+        sessionsBody.removeChild(deleteElement);
+        sessionsBody.removeChild(editor);
+        sessionsBody.removeChild(notesAndDelete);
+      } else {
+        console.log('Did not delete!');
       }
     }
-    xhr.send();
+  }
+  xhr.send();
+}
+
+var month = 'Jan';
+
+var minByMon = function(givenMonth, givenYear) {
+  let sessionsBody = document.getElementById('sessionsBody');
+  let currentTable = sessionsBody.children;
+  let total = 0;
+  for (let i = 0 ; i < currentTable.length ; i++ ) {
+    let thisDate = currentTable[i].children[0].textContent;
+    let thisMonth = thisDate.slice(0, 2);
+    let thisYear = thisDate.slice(6, 10);
+    let unForMin = currentTable[i].children[2].textContent;
+    let min = unForMin.slice(0, unForMin.length-4);
+    if (givenMonth === thisMonth && givenYear === thisYear) {
+      total = total + parseInt(min);
+    }
+  }
+  let totalSpan = document.getElementById('totalMinByMonth');
+  totalSpan.textContent = total;
+
 
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -68,9 +68,31 @@
             </div>
           </div>
       </form>
-      <div id="pingResponse"></div>
+      <div>
+        <h4>Show Minutes Studied by Month</h4>
+        <form name="minByMon" action="index.html" method="post">
+          <label for="months">Month</label>
+          <select id="monthsDropDown" name="months">
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+          <label for="year">Year</label>
+          <input type="text" name="year" value="2018">
+          <button type="button" name="button">Show</button>
+        </form>
+        Total: <span id="totalMinByMonth"></span>
+      </div>
       <hr>
-
 
 
 
