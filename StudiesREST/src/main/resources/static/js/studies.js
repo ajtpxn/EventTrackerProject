@@ -62,8 +62,10 @@ function sessionsIndex() {
 }
 
 function displayStudySessions(studySessions) {
-  let sessionsBody = document.getElementById('sessionsBody');
-  let tableForEachFunc = function(studySession) {
+
+  var tableForEachFunc = function(studySession) {
+    // defines the function to put
+    // each study session on the page
     let trSession = document.createElement('tr');
     let tdSessionDate = document.createElement('td');
     let unformattedDate = studySession.studyDate;
@@ -81,16 +83,18 @@ function displayStudySessions(studySessions) {
     sessionDetailsLink.href = '*';
     sessionDetailsLink.textContent = 'Details';
     sessionDetailsLink.classList.add('detailsLink');
-    sessionDetailsLink.addEventListener('click', function x(e) {
+
+    var detailsListener = function(e) {
       e.preventDefault();
-      let thisSession = sessionDetailsLink.parentNode.parentNode;
-      let sessIndex = thisSession.rowIndex;
-      let editRow = sessionsBody.insertRow(sessIndex);
+      var sessionsBody = document.getElementById('sessionsBody');
+      let thisRow = sessionDetailsLink.parentNode.parentNode;
+      let sessIndex = thisRow.rowIndex;
+      var editRow = sessionsBody.insertRow(sessIndex);
       let updateDateCol = editRow.insertCell(0);
       let updateSessionForm = document.createElement('form');
       let updateDateInput = document.createElement('input');
       updateDateInput.type = 'text';
-      let formattedDate = dateFromISOToUSA(studySession.studyDate)
+      formattedDate = dateFromISOToUSA(studySession.studyDate);
       updateDateInput.value = formattedDate;
       updateDateCol.appendChild(updateDateInput);
       let updateTopicCol = editRow.insertCell(1);
@@ -108,12 +112,13 @@ function displayStudySessions(studySessions) {
       updateSessionLink.href = '*';
       updateSessionLink.textContent = 'Update';
       updateSessionLink.classList.add('text-success');
-      updateSessionLink.addEventListener('click', function(e) {
+      var updateSessionFunction = function(e) {
         event.preventDefault();
         updateStudySession(studySession.id, updateDateInput.value, updateTopicInput.value, updateLengthInput.value, sessIndex);
-      });
+      }
+      updateSessionLink.addEventListener('click', updateSessionFunction);
       updateCol.appendChild(updateSessionLink);
-      let notesAndDeleteRow = sessionsBody.insertRow(sessIndex + 1);
+      var notesAndDeleteRow = sessionsBody.insertRow(sessIndex + 1);
       let notesCol = notesAndDeleteRow.insertCell(0);
       notesCol.textContent = 'Notes: This was a very special study session. Rating: Excellent';
       notesCol.colSpan = '3';
@@ -122,29 +127,33 @@ function displayStudySessions(studySessions) {
       deleteSessionLink.href = '*';
       deleteSessionLink.textContent = 'Delete';
       deleteSessionLink.classList.add('text-danger');
-      deleteSessionLink.addEventListener('click', function(e) {
-        // get session id and submit to api for deletion
-      });
+      var deleteFunc = function(e) {
+        deleteSession(sessionId);
+      }
+      deleteSessionLink.addEventListener('click', deleteFunc);
       deleteCol.appendChild(deleteSessionLink);
-      sessionDetailsLink.removeEventListener('click', x);
-      sessionDetailsLink.addEventListener('click', function y(e) {
-    	  e.preventDefault();
-    	  console.log('No Action.');
-        sessionDetailsLink.parentNode.parentNode.id = 'openDetails';
-        closeDetails();
-        sessionDetailsLink.parentNode.parentNode.id = 'closedDetails';
-      });
-    });
+      var closeDetailsListener = function(e) {
+        e.preventDefault();
+        sessionsBody.removeChild(editRow);
+        sessionsBody.removeChild(notesAndDeleteRow);
+        sessionDetailsLink.removeEventListener('click', closeDetailsListener);
+        sessionDetailsLink.addEventListener('click', detailsListener);
+      }
+      sessionDetailsLink.removeEventListener('click', detailsListener);
+      sessionDetailsLink.addEventListener('click', closeDetailsListener);
+    }
+    sessionDetailsLink.addEventListener('click', detailsListener);
     tdSessionButtonCol.appendChild(sessionDetailsLink);
     trSession.appendChild(tdSessionButtonCol);
     sessionsBody.appendChild(trSession);
   }
-  studySessions.forEach(tableForEachFunc);
+
+  studySessions.forEach(tableForEachFunc); //populates all study sessions to page
 }
 
 function setDateToToday() {
-  let unformattedDate = new Date();
-  document.addStudySession.date.value = unformattedDate;
+  let todaysDate = new Date();
+  document.addStudySession.date.value = todaysDate;
 }
 
 function postStudySession(postDate, postTopic, postLength) {
@@ -175,6 +184,7 @@ function postStudySession(postDate, postTopic, postLength) {
 
 function populateTopicDropDown(topics) {
   let topicDropDown = document.getElementById("topicDropDown");
+
   function topicsDropDownFunc(topic) {
     let optionId = topic.id;
     let optionTitle = topic.title;
@@ -242,20 +252,16 @@ function updateStudySession(putId, putDate, putTopic, putLength, sessIndex) {
     if (xhr.readyState === 4) {
       if (xhr.status == 200 || xhr.status == 201) {
         let studySession = JSON.parse(xhr.responseText);
-        console.log('Updated');
-        console.log(studySession);
         let sessionsBody = document.getElementById('sessionsBody');
-        let editElement = sessionsBody.children[sessIndex-1];
+        let editElement = sessionsBody.children[sessIndex - 1];
         let formattedDate = dateFromISOToUSA(studySession.studyDate);
         editElement.children[0].textContent = formattedDate;
         editElement.children[1].textContent = studySession.topic.title;
-        editElement.children[2].textContent = studySession.length;
-        let removeEditor = sessionsBody.children[sessIndex];
-        console.log('Delete this row: ' + sessIndex);
-        console.log(removeEditor);
-        let removeDeleteRow = sessionsBody.children[sessIndex+1]
-        console.log('And this one: ' + (sessIndex+1));
-        console.log(removeDeleteRow);
+        editElement.children[2].textContent = studySession.length + ' min';
+        let editor = sessionsBody.children[sessIndex];
+        let notesAndDelete = sessionsBody.children[sessIndex + 1]
+        sessionsBody.removeChild(editor);
+        sessionsBody.removeChild(notesAndDelete);
       } else {
         console.log("PUT request failed.");
         console.error(xhr.status + ': ' + xhr.responseText);
@@ -276,16 +282,20 @@ function updateStudySession(putId, putDate, putTopic, putLength, sessIndex) {
   xhr.send(studySessionObjectJson);
 }
 
-function closeDetails() {
-  let sessionsBody = document.getElementById('sessionsBody');
-  let openSession = document.getElementById('openDetails');
-  let editor = openSession.nextElementSibling;
-  let notesAndDelete = openSession.nextElementSibling.nextElementSibling;
-  sessionsBody.removeChild(editor);
-  sessionsBody.removeChild(notesAndDelete);
-}
+
 
 function deleteSession(sessionId) {
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('DELETE', 'http://localhost:8383/api/studySessions/' + sessionId);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status <= 200) {
+        let rawData = xhr.responseText;
+        let studySessions = JSON.parse(rawData);
+        displayStudySessions(studySessions);
+      }
+    }
+    xhr.send();
 
 }
 
